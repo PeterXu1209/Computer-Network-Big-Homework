@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="httpobjects.servlet" type="repository">
+    <properties maven-id="org.httpobjects.servlet:httpobjects-servlet:0.9.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/httpobjects/servlet/httpobjects-servlet/0.9.0/httpobjects-servlet-0.9.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/httpobjects/httpobjects/0.9.0/httpobjects-0.9.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

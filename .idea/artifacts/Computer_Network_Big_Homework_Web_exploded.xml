@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Computer_Network_Big_Homework:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/Computer_Network_Big_Homework_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="Computer_Network_Big_Homework/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Computer_Network_Big_Homework" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="JUnit5.8.1" module-name="Computer_Network_Big_Homework" />
+          <element id="library" level="project" name="junit.dep" />
+          <element id="library" level="project" name="httpobjects.servlet" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

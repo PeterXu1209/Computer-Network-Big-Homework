@@ -37,6 +37,10 @@ public class Request implements ServletRequest {
             request.append((char)buffer[i]);
         }
         uri = parseUri(request.toString());
+        if(uri.equals("/shutdown")){
+            System.out.println("正在关闭服务器");
+            System.exit(1);
+        }
     }
     private String parseUri(String str){
         int index1,index2;

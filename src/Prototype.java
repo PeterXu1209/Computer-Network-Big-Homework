@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-public class prototype {
+public class Prototype {
     public static void main(String[] args) {
         try {
             ServerSocket serverSocket = new ServerSocket(9091);

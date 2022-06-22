@@ -57,7 +57,7 @@ public class Response implements ServletResponse {
     //返回writer实例
     @Override
     public PrintWriter getWriter() throws IOException {
-        PrintWriter writer = new PrintWriter(os,true);
+        PrintWriter writer = new PrintWriter(os,true);//打开自动刷新
         return writer;
     }
 

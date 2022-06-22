@@ -19,7 +19,8 @@ public class TimeServlet implements Servlet {
     public ServletConfig getServletConfig() {
         return null;
     }
-/*important*/
+/*important动态确定内容
+返回请求的时刻*/
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         PrintWriter out = servletResponse.getWriter();

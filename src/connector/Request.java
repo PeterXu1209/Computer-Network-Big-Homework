@@ -1,19 +1,9 @@
 package connector;
 import jakarta.servlet.*;
-
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
-
-//import java.net.InetSocketAddress;
-//import java.net.Socket;
-//import java.nio.charset.StandardCharsets;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Scanner;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
 public class Request implements ServletRequest {
     private static final int Buffer =1024;
     private InputStream is;
@@ -36,6 +26,7 @@ public class Request implements ServletRequest {
         for (int i = 0; i < length; i++) {
             request.append((char)buffer[i]);
         }
+        //System.out.println(request);
         uri = parseUri(request.toString());
         if(uri.equals("/shutdown")){
             System.out.println("正在关闭服务器");

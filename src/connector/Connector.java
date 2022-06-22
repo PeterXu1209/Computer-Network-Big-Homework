@@ -1,5 +1,7 @@
 package connector;
 
+import jakarta.servlet.Servlet;
+import processor.ServletProcessor;
 import processor.StaticProcessor;
 
 import java.io.Closeable;
@@ -16,7 +18,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Set;
 
 public class Connector implements Runnable{
-    private static final int PORT=9091;
+    private static final int PORT=8081;
     private ServerSocketChannel server;
     private Selector selector;
     private int port;
@@ -37,16 +39,18 @@ public class Connector implements Runnable{
             server.configureBlocking(false);//非阻塞式的
             server.socket().bind(new InetSocketAddress(port));
 
-            selector=Selector.open();
-            server.register(selector, SelectionKey.OP_ACCEPT);
+            selector=Selector.open();//IO多路复用
+            server.register(selector, SelectionKey.OP_ACCEPT);//有新的客户端连接，服务器监听到了客户连接
             System.out.println("启动服务器，监听端口"+port);
             while(true){
-                selector.select();
+                selector.select();//监听是否有这个事件发生
                 Set<SelectionKey>selectionKeys=selector.selectedKeys();
+                //一个一个处理这些事件
                 for(SelectionKey key:selectionKeys){
                     //处理被触发的事件
                     handles(key);
                 }
+                //消除这些key
                 selectionKeys.clear();
             }
 //            server = new ServerSocket(port);
@@ -84,17 +88,17 @@ public class Connector implements Runnable{
         }
     }
     private void handles(SelectionKey key) throws IOException{
-        //处理accept事件
+        //先处理accept事件，有客户端发送请求
         if (key.isAcceptable()) {//如果是accept
-            ServerSocketChannel server = (ServerSocketChannel) key.channel();
-            SocketChannel client = server.accept();
+            ServerSocketChannel server = (ServerSocketChannel) key.channel();//得到对应的ServerSocketChannel
+            SocketChannel client = server.accept();//accept客户的请求
             client.configureBlocking(false);
-            client.register(selector,SelectionKey.OP_READ);
+            client.register(selector,SelectionKey.OP_READ);//绑定Read事件
         }
-        //READ
+        //再处理READ事件
         else{
             SocketChannel client = (SocketChannel) key.channel();
-            key.cancel();//解锁selector与socketchannel的关系
+            key.cancel();//解锁selector与socketchannel的关系，不需要保持与客户端的连接，这里只需要发送一次消息然后关闭连接就足够了。
             client.configureBlocking(true);
             Socket clientSocket = client.socket();
             InputStream is = clientSocket.getInputStream();
@@ -105,10 +109,14 @@ public class Connector implements Runnable{
 
             Response response = new Response(os);
             response.setRequest(request);
+            if(request.getRequestUri().startsWith("/servlet/")){
+                ServletProcessor processor = new ServletProcessor();
+                processor.process(request,response);
+            }else{
+                StaticProcessor processor = new StaticProcessor();
+                processor.process(request,response);
 
-            StaticProcessor processor = new StaticProcessor();
-            processor.process(request,response);
-
+            }
             Close(client);
         }
 

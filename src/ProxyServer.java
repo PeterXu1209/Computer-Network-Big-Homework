@@ -64,7 +64,6 @@ public class ProxyServer {
         }
         //再处理READ事件
         else {
-            int flag=1;
             final byte[] request = new byte[1024];
             byte[] reply = new byte[4096];
             SocketChannel client = (SocketChannel) key.channel();
@@ -91,7 +90,7 @@ public class ProxyServer {
                 try {
                     int _bytesRead;
                     byte[] buffer = new byte[1024];
-
+                    int flag=0;
                     while ((_bytesRead = streamFromClient.read(request)) != -1) {
                         String temp=null;
                         StringBuilder _request = new StringBuilder();
@@ -100,30 +99,45 @@ public class ProxyServer {
                         }
                         temp=parseUri(_request.toString());
                         System.out.println(temp);
-                        if(temp.startsWith("/www")){
-                            String real = temp.toString();
-                            real=real.substring(1);
+                        String real = temp.toString();
+                        real=real.substring(1);
+                        if(real.equals("index.html")||real.equals("404.html")||real.equals("shutdown")){
+                            flag=1;
+                        }
+                        if(flag!=1){
+                            System.out.println(real);
                             real="https://"+real;
-                            System.out.println(real);
                             String read = sendRequest(real,null);
-                            //System.out.println(read);
+                            System.out.println(read);
                             streamToClient.write(ConnectorUtils.renderStatus(HTTPStatus.SC_OK).getBytes(StandardCharsets.UTF_8));
                             streamToClient.write(read.getBytes(StandardCharsets.UTF_8));
                             streamToClient.flush();
                             streamToClient.close();
                         }
-                        if(temp.startsWith("https")){
-                            String real = temp.toString();
-                            real=real.substring(1);
-                            //real="https://"+real;
-                            System.out.println(real);
-                            String read = sendRequest(real,null);
-                            //System.out.println(read);
-                            streamToClient.write(ConnectorUtils.renderStatus(HTTPStatus.SC_OK).getBytes(StandardCharsets.UTF_8));
-                            streamToClient.write(read.getBytes(StandardCharsets.UTF_8));
-                            streamToClient.flush();
-                            streamToClient.close();
-                        }
+//                        if(temp.startsWith("/www")){
+//                            String real = temp.toString();
+//                            real=real.substring(1);
+//                            real="https://"+real;
+//                            System.out.println(real);
+//                            String read = sendRequest(real,null);
+//                            //System.out.println(read);
+//                            streamToClient.write(ConnectorUtils.renderStatus(HTTPStatus.SC_OK).getBytes(StandardCharsets.UTF_8));
+//                            streamToClient.write(read.getBytes(StandardCharsets.UTF_8));
+//                            streamToClient.flush();
+//                            streamToClient.close();
+//                        }
+//                        if(temp.startsWith("https")){
+//                            String real = temp.toString();
+//                            real=real.substring(1);
+//                            //real="https://"+real;
+//                            System.out.println(real);
+//                            String read = sendRequest(real,null);
+//                            //System.out.println(read);
+//                            streamToClient.write(ConnectorUtils.renderStatus(HTTPStatus.SC_OK).getBytes(StandardCharsets.UTF_8));
+//                            streamToClient.write(read.getBytes(StandardCharsets.UTF_8));
+//                            streamToClient.flush();
+//                            streamToClient.close();
+//                        }
                         streamToServer.write(request, 0, _bytesRead);
                         streamToServer.flush();
                     }
